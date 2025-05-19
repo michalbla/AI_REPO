@@ -1,0 +1,90 @@
+// Drzewo gry RPSLS
+digraph {
+	node [fillcolor=lightblue shape=box style=filled]
+	root [label="Start gry"]
+	P_R [label="Gracz: Kamień"]
+	root -> P_R
+	O_R_R [label="Przeciwnik: Kamień
+Wynik: 0" fillcolor=yellow]
+	P_R -> O_R_R
+	O_R_P [label="Przeciwnik: Papier
+Wynik: -1" fillcolor=red]
+	P_R -> O_R_P
+	O_R_S [label="Przeciwnik: Nożyce
+Wynik: 1" fillcolor=green]
+	P_R -> O_R_S
+	O_R_L [label="Przeciwnik: Jaszczurka
+Wynik: 1" fillcolor=green]
+	P_R -> O_R_L
+	O_R_V [label="Przeciwnik: Spock
+Wynik: -1" fillcolor=red]
+	P_R -> O_R_V
+	P_P [label="Gracz: Papier"]
+	root -> P_P
+	O_P_R [label="Przeciwnik: Kamień
+Wynik: 1" fillcolor=green]
+	P_P -> O_P_R
+	O_P_P [label="Przeciwnik: Papier
+Wynik: 0" fillcolor=yellow]
+	P_P -> O_P_P
+	O_P_S [label="Przeciwnik: Nożyce
+Wynik: -1" fillcolor=red]
+	P_P -> O_P_S
+	O_P_L [label="Przeciwnik: Jaszczurka
+Wynik: -1" fillcolor=red]
+	P_P -> O_P_L
+	O_P_V [label="Przeciwnik: Spock
+Wynik: 1" fillcolor=green]
+	P_P -> O_P_V
+	P_S [label="Gracz: Nożyce"]
+	root -> P_S
+	O_S_R [label="Przeciwnik: Kamień
+Wynik: -1" fillcolor=red]
+	P_S -> O_S_R
+	O_S_P [label="Przeciwnik: Papier
+Wynik: 1" fillcolor=green]
+	P_S -> O_S_P
+	O_S_S [label="Przeciwnik: Nożyce
+Wynik: 0" fillcolor=yellow]
+	P_S -> O_S_S
+	O_S_L [label="Przeciwnik: Jaszczurka
+Wynik: 1" fillcolor=green]
+	P_S -> O_S_L
+	O_S_V [label="Przeciwnik: Spock
+Wynik: -1" fillcolor=red]
+	P_S -> O_S_V
+	P_L [label="Gracz: Jaszczurka"]
+	root -> P_L
+	O_L_R [label="Przeciwnik: Kamień
+Wynik: -1" fillcolor=red]
+	P_L -> O_L_R
+	O_L_P [label="Przeciwnik: Papier
+Wynik: 1" fillcolor=green]
+	P_L -> O_L_P
+	O_L_S [label="Przeciwnik: Nożyce
+Wynik: -1" fillcolor=red]
+	P_L -> O_L_S
+	O_L_L [label="Przeciwnik: Jaszczurka
+Wynik: 0" fillcolor=yellow]
+	P_L -> O_L_L
+	O_L_V [label="Przeciwnik: Spock
+Wynik: 1" fillcolor=green]
+	P_L -> O_L_V
+	P_V [label="Gracz: Spock"]
+	root -> P_V
+	O_V_R [label="Przeciwnik: Kamień
+Wynik: 1" fillcolor=green]
+	P_V -> O_V_R
+	O_V_P [label="Przeciwnik: Papier
+Wynik: -1" fillcolor=red]
+	P_V -> O_V_P
+	O_V_S [label="Przeciwnik: Nożyce
+Wynik: 1" fillcolor=green]
+	P_V -> O_V_S
+	O_V_L [label="Przeciwnik: Jaszczurka
+Wynik: -1" fillcolor=red]
+	P_V -> O_V_L
+	O_V_V [label="Przeciwnik: Spock
+Wynik: 0" fillcolor=yellow]
+	P_V -> O_V_V
+}

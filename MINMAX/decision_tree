@@ -1,0 +1,89 @@
+// Min-Max Tree: Rock Paper Scissors Lizard Spock
+digraph {
+	root [label="Twoja decyzja"]
+	my_rock [label=rock]
+	root -> my_rock
+	rock_vs_rock [label="vs rock
+wynik: 0"]
+	my_rock -> rock_vs_rock
+	rock_vs_paper [label="vs paper
+wynik: -1"]
+	my_rock -> rock_vs_paper
+	rock_vs_scissors [label="vs scissors
+wynik: 1"]
+	my_rock -> rock_vs_scissors
+	rock_vs_lizard [label="vs lizard
+wynik: 1"]
+	my_rock -> rock_vs_lizard
+	rock_vs_spock [label="vs spock
+wynik: -1"]
+	my_rock -> rock_vs_spock
+	my_paper [label=paper]
+	root -> my_paper
+	paper_vs_rock [label="vs rock
+wynik: 1"]
+	my_paper -> paper_vs_rock
+	paper_vs_paper [label="vs paper
+wynik: 0"]
+	my_paper -> paper_vs_paper
+	paper_vs_scissors [label="vs scissors
+wynik: -1"]
+	my_paper -> paper_vs_scissors
+	paper_vs_lizard [label="vs lizard
+wynik: -1"]
+	my_paper -> paper_vs_lizard
+	paper_vs_spock [label="vs spock
+wynik: 1"]
+	my_paper -> paper_vs_spock
+	my_scissors [label=scissors]
+	root -> my_scissors
+	scissors_vs_rock [label="vs rock
+wynik: -1"]
+	my_scissors -> scissors_vs_rock
+	scissors_vs_paper [label="vs paper
+wynik: 1"]
+	my_scissors -> scissors_vs_paper
+	scissors_vs_scissors [label="vs scissors
+wynik: 0"]
+	my_scissors -> scissors_vs_scissors
+	scissors_vs_lizard [label="vs lizard
+wynik: 1"]
+	my_scissors -> scissors_vs_lizard
+	scissors_vs_spock [label="vs spock
+wynik: -1"]
+	my_scissors -> scissors_vs_spock
+	my_lizard [label=lizard]
+	root -> my_lizard
+	lizard_vs_rock [label="vs rock
+wynik: -1"]
+	my_lizard -> lizard_vs_rock
+	lizard_vs_paper [label="vs paper
+wynik: 1"]
+	my_lizard -> lizard_vs_paper
+	lizard_vs_scissors [label="vs scissors
+wynik: -1"]
+	my_lizard -> lizard_vs_scissors
+	lizard_vs_lizard [label="vs lizard
+wynik: 0"]
+	my_lizard -> lizard_vs_lizard
+	lizard_vs_spock [label="vs spock
+wynik: 1"]
+	my_lizard -> lizard_vs_spock
+	my_spock [label=spock]
+	root -> my_spock
+	spock_vs_rock [label="vs rock
+wynik: 1"]
+	my_spock -> spock_vs_rock
+	spock_vs_paper [label="vs paper
+wynik: -1"]
+	my_spock -> spock_vs_paper
+	spock_vs_scissors [label="vs scissors
+wynik: 1"]
+	my_spock -> spock_vs_scissors
+	spock_vs_lizard [label="vs lizard
+wynik: -1"]
+	my_spock -> spock_vs_lizard
+	spock_vs_spock [label="vs spock
+wynik: 0"]
+	my_spock -> spock_vs_spock
+}
