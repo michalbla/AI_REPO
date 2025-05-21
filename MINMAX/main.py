@@ -1,221 +1,147 @@
-from random import choice
-from math import inf
-import networkx as nx
-import matplotlib.pyplot as plt
-import scipy as sp
+import math
+import random
 
-board = [[0, 0, 0],
-         [0, 0, 0],
-         [0, 0, 0]]
 
-# Tworzenie pustego drzewa
-G = nx.DiGraph()
+def print_board(board):
+    print()
+    for i in range(0, 9, 3):
+        print(board[i:i + 3])
+    print()
 
-def Gameboard(board):
-    chars = {1: 'X', -1: 'O', 0: ' '}
-    for x in board:
-        for y in x:
-            ch = chars[y]
-            print(f'| {ch} |', end='')
-        print('\n' + '---------------')
-    print('===============')
 
-def Clearboard(board):
-    for x, row in enumerate(board):
-        for y, col in enumerate(row):
-            board[x][y] = 0
+def check_winner(board):
+    wins = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+    ]
+    for line in wins:
+        if board[line[0]] == board[line[1]] == board[line[2]] != ' ':
+            return board[line[0]]
+    if ' ' not in board:
+        return 'Draw'
+    return None
 
-def winningPlayer(board, player):
-    conditions = [[board[0][0], board[0][1], board[0][2]],
-                     [board[1][0], board[1][1], board[1][2]],
-                     [board[2][0], board[2][1], board[2][2]],
-                     [board[0][0], board[1][0], board[2][0]],
-                     [board[0][1], board[1][1], board[2][1]],
-                     [board[0][2], board[1][2], board[2][2]],
-                     [board[0][0], board[1][1], board[2][2]],
-                     [board[0][2], board[1][1], board[2][0]]]
 
-    if [player, player, player] in conditions:
-        return True
-
-    return False
-
-def gameWon(board):
-    return winningPlayer(board, 1) or winningPlayer(board, -1)
-
-def printResult(board):
-    if winningPlayer(board, 1):
-        print('X has won! ' + '\n')
-
-    elif winningPlayer(board, -1):
-        print('O\'s have won! ' + '\n')
-
-    else:
-        print('Draw' + '\n')
-
-def blanks(board):
-    blank = []
-    for x, row in enumerate(board):
-        for y, col in enumerate(row):
-            if board[x][y] == 0:
-                blank.append([x, y])
-
-    return blank
-
-def boardFull(board):
-    if len(blanks(board)) == 0:
-        return True
-    return False
-
-def setMove(board, x, y, player):
-    board[x][y] = player
-
-def playerMove(board):
-    e = True
-    moves = {1: [0, 0], 2: [0, 1], 3: [0, 2],
-             4: [1, 0], 5: [1, 1], 6: [1, 2],
-             7: [2, 0], 8: [2, 1], 9: [2, 2]}
-    while e:
-        try:
-            move = int(input('Enter a number between 1-9: '))
-            if move < 1 or move > 9:
-                print('Invalid Move! Try again!')
-            elif not (moves[move] in blanks(board)):
-                print('Invalid Move! Try again!')
-            else:
-                setMove(board, moves[move][0], moves[move][1], 1)
-                Gameboard(board)
-                e = False
-        except(KeyError, ValueError):
-            print('Enter a number!')
-
-def getScore(board):
-    if winningPlayer(board, 1):
+def evaluate_board(board):
+    result = check_winner(board)
+    if result == 'X':
         return 10
-
-    elif winningPlayer(board, -1):
+    elif result == 'O':
         return -10
-
-    else:
+    elif result == 'Draw':
         return 0
 
-# Zmieniona funkcja abminimax z dodawaniem węzłów do drzewa
-def abminimax(board, depth, alpha, beta, player, parent=None, move=None):
-    row = -1
-    col = -1
-    if depth == 0 or gameWon(board):
-        score = getScore(board)
-        G.add_node(str(board), label=str(board), score=score)  # Dodaj węzeł
-        if parent:
-            G.add_edge(parent, str(board), label=f'Move: {move}, Score: {score}')
-        return [row, col, score]
+    def count_lines(player):
+        lines = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ]
+        count = 0
+        for line in lines:
+            if all(board[i] == player or board[i] == ' ' for i in line):
+                count += 1
+        return count
 
+    x_lines = count_lines('X')
+    o_lines = count_lines('O')
+    return x_lines - o_lines
+
+
+def minimax(board, depth, max_depth, alpha, beta, is_maximizing):
+    score = evaluate_board(board)
+    result = check_winner(board)
+
+    if depth == max_depth or result is not None:
+        return score
+
+    if is_maximizing:
+        max_eval = -math.inf
+        for i in range(9):
+            if board[i] == ' ':
+                board[i] = 'X'
+                eval = minimax(board, depth + 1, max_depth, alpha, beta, False)
+                board[i] = ' '
+                max_eval = max(max_eval, eval)
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break
+        return max_eval
+    else:
+        min_eval = math.inf
+        for i in range(9):
+            if board[i] == ' ':
+                board[i] = 'O'
+                eval = minimax(board, depth + 1, max_depth, alpha, beta, True)
+                board[i] = ' '
+                min_eval = min(min_eval, eval)
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break
+        return min_eval
+
+
+def best_move(board, max_depth):
+    best_score = -math.inf
     best_move = None
-    if player == 1:
-        max_eval = -inf
-        for cell in blanks(board):
-            setMove(board, cell[0], cell[1], player)
-            result = abminimax(board, depth - 1, alpha, beta, -player, str(board), f'{cell[0]},{cell[1]}')
-            if result[2] > max_eval:
-                max_eval = result[2]
-                best_move = [cell[0], cell[1]]
-            alpha = max(alpha, max_eval)
-            setMove(board, cell[0], cell[1], 0)
-            if beta <= alpha:
-                break
-        G.add_node(str(board), label=str(board), score=max_eval)
-        if parent:
-            G.add_edge(parent, str(board), label=f'Move: {best_move}, Score: {max_eval}')
-        return [best_move[0], best_move[1], max_eval]
+    for i in range(9):
+        if board[i] == ' ':
+            board[i] = 'X'
+            score = minimax(board, 0, max_depth, -math.inf, math.inf, False)
+            board[i] = ' '
+            if score > best_score:
+                best_score = score
+                best_move = i
+    return best_move
 
-    else:
-        min_eval = inf
-        for cell in blanks(board):
-            setMove(board, cell[0], cell[1], player)
-            result = abminimax(board, depth - 1, alpha, beta, -player, str(board), f'{cell[0]},{cell[1]}')
-            if result[2] < min_eval:
-                min_eval = result[2]
-                best_move = [cell[0], cell[1]]
-            beta = min(beta, min_eval)
-            setMove(board, cell[0], cell[1], 0)
-            if beta <= alpha:
-                break
-        G.add_node(str(board), label=str(board), score=min_eval)
-        if parent:
-            G.add_edge(parent, str(board), label=f'Move: {best_move}, Score: {min_eval}')
-        return [best_move[0], best_move[1], min_eval]
 
-def o_comp(board):
-    if len(blanks(board)) == 9:
-        x = choice([0, 1, 2])
-        y = choice([0, 1, 2])
-        setMove(board, x, y, -1)
-        Gameboard(board)
-
-    else:
-        result = abminimax(board, len(blanks(board)), -inf, inf, -1)
-        setMove(board, result[0], result[1], -1)
-        Gameboard(board)
-
-def x_comp(board):
-    if len(blanks(board)) == 9:
-        x = choice([0, 1, 2])
-        y = choice([0, 1, 2])
-        setMove(board, x, y, 1)
-        Gameboard(board)
-
-    else:
-        result = abminimax(board, len(blanks(board)), -inf, inf, 1)
-        setMove(board, result[0], result[1], 1)
-        Gameboard(board)
-
-def makeMove(board, player, mode):
-    if mode == 1:
-        if player == 1:
-            playerMove(board)
-
-        else:
-            o_comp(board)
-    else:
-        if player == 1:
-            o_comp(board)
-        else:
-            x_comp(board)
-
-def pvc():
+def player_move(board):
     while True:
         try:
-            order = int(input('Enter to play 1st or 2nd: '))
-            if not (order == 1 or order == 2):
-                print('Please pick 1 or 2')
+            move = int(input("Twój ruch (0-8): "))
+            if 0 <= move < 9 and board[move] == ' ':
+                return move
             else:
-                break
-        except(KeyError, ValueError):
-            print('Enter a number')
+                print("Nieprawidlowy ruch. Sprobuj jeszcze raz.")
+        except ValueError:
+            print("Podaj liczbe od 0 do 8.")
 
-    Clearboard(board)
-    if order == 2:
-        currentPlayer = -1
-    else:
-        currentPlayer = 1
 
-    while not (boardFull(board) or gameWon(board)):
-        makeMove(board, currentPlayer, 1)
-        currentPlayer *= -1
+def play_game():
+    board = [' '] * 9
+    print("Gra w Kolko i Krzyzyk – Ty grasz jako 'O'.")
+    print("Numeracja pol:")
+    print_board([str(i) for i in range(9)])
 
-    printResult(board)
+    max_depth = int(input("Podaj maksymalną głębokość przeszukiwania dla AI (1-9): "))
+    max_depth = max(1, min(9, max_depth))
 
-# Driver Code
-print("=================================================")
-print("TIC-TAC-TOE using MINIMAX with ALPHA-BETA Pruning")
-print("=================================================")
-pvc()
+    current_player = 'X'
 
-# Wizualizacja drzewa decyzyjnego
-labels = nx.get_edge_attributes(G, 'label')
-pos = nx.spring_layout(G, seed=42)
-plt.figure(figsize=(12, 12))
-nx.draw(G, pos, with_labels=True, node_size=2000, node_color="skyblue", font_size=10, font_weight='bold', arrows=True)
-nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-plt.title("Game Tree of Tic-Tac-Toe")
-plt.show()
+    while True:
+        if current_player == 'X':
+            move = best_move(board, max_depth)
+            board[move] = 'X'
+            print(f"\nAI (X) wykonuje ruch na polu {move}:")
+        else:
+            move = player_move(board)
+            board[move] = 'O'
+            print(f"\nTwoj ruch (O) na pole {move}:")
+
+        print_board(board)
+
+        winner = check_winner(board)
+        if winner:
+            if winner == 'Draw':
+                print("Remis!")
+            elif winner == 'X':
+                print("AI (X) wygralo!")
+            else:
+                print("Wygrales!")
+            break
+
+        current_player = 'O' if current_player == 'X' else 'X'
+
+
+play_game()
